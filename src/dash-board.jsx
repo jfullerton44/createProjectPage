@@ -164,12 +164,18 @@ export default class Dashboard extends React.Component {
   render() {
     return (
       <div>
-        {this.blockchainProviders.ixo_keysafe.doShow && 
+        {/* {this.blockchainProviders.ixo_keysafe.doShow && 
           <button onClick={this.handleSimulateDidDocLedgeringButtonClicked}>Ledger DID Manually</button>
         }
         {this.blockchainProviders.ixo_keysafe.doShow && 
           <button onClick={this.handleRequestInfoButtonClicked}>ixo INFO</button>
-        }
+        } */}
+        <div></div>
+        <br></br>
+        <br></br>
+        <br></br>
+
+
         <input value={this.state.messageBody} onChange={this.handleMessageBodyChanged} />
         {this.blockchainProviders.ixo_keysafe.doShow && 
           <Launchbutton
