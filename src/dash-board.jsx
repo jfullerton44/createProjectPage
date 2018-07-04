@@ -128,9 +128,10 @@ export default class Dashboard extends React.Component {
     if (blockchainProvider.id === this.blockchainProviders.ixo_keysafe.id) {      
       this.blockchainProviders.ixo_keysafe.provider.requestSigning(message, (error, response)=> {
         alert(`Dashboard handling received response for SIGN response: ${JSON.stringify(response)}, error: ${JSON.stringify(error)}`)
-        console.log(`Dashboard handling received response for SIGN response: \n${JSON.stringify(response)}\n, error: \n${JSON.stringify(error)}\n`)
+        //console.log(`Dashboard handling received response for SIGN response: \n${JSON.stringify(response)}\n, error: \n${JSON.stringify(error)}\n`)
         this.state.ixo.project.createProject(JSON.parse(message), response, 'http://localhost:5000/').then((result) => {
-          console.log(`Project Details:  + \n${JSON.stringify(result)}`)
+          console.log(`Project Details:   \n${JSON.stringify(result)}`)
+          alert(`Charity Creation Result:  \n${JSON.stringify(result)}`)
       }) 
       })
       return
