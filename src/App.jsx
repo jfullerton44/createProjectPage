@@ -16,8 +16,9 @@ class App extends Component {
         </header>
         <Dashboard/>
         <br></br>
-        Paste the Project string in the textbox <br></br>
-        and click "ixo Sign and Create" to Create your project
+        Paste the Project string in the textbox 
+        <br></br>
+        and click "ixo Sign and Create" to create your project
       </div>
     );
   }
