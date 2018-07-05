@@ -8,7 +8,7 @@ export default class Dashboard extends React.Component {
   constructor(props) {
     super(props);
    
-    this.state = {messageBody: '', ixo: null}
+    this.state = {messageBody: '', ixo: null, messageBody2: ''}
 
     this.blockchainProviders = {
       metamask: {id: 0, doShow: false, windowKey: "web3", extension: "Metamask", provider: null},
@@ -18,6 +18,7 @@ export default class Dashboard extends React.Component {
     // This binding is necessary to make `this` work in the callback
     this.handleExtensionLaunch = this.handleExtensionLaunch.bind(this);
     this.handleMessageBodyChanged = this.handleMessageBodyChanged.bind(this);
+    this.handleMessageBodyChanged2 = this.handleMessageBodyChanged2.bind(this);
     this.getEthereumAddressAsync = this.getEthereumAddressAsync.bind(this);
     this.handleRequestInfoButtonClicked = this.handleRequestInfoButtonClicked.bind(this)
 
@@ -111,6 +112,9 @@ export default class Dashboard extends React.Component {
   handleMessageBodyChanged(e) {
     this.setState({messageBody: e.target.value});
   }
+  handleMessageBodyChanged2(e) {
+    this.setState({messageBody2: e.target.value});
+  }
 
   handleExtensionLaunch(providerId) {
     // console.log(`***** target: ${target}`);
@@ -120,16 +124,16 @@ export default class Dashboard extends React.Component {
     }
     
     const blockchainProvider = (providerId === this.blockchainProviders.metamask.id)?this.blockchainProviders.metamask:this.blockchainProviders.ixo_keysafe;
-    this.signMessageWithProvider(this.state.messageBody, blockchainProvider);
+    this.signMessageWithProvider(this.state.messageBody, blockchainProvider, this.state.messageBody2);
   }
 
-  signMessageWithProvider(message, blockchainProvider) {
+  signMessageWithProvider(message, blockchainProvider, PDSURL) {
     //JSON.stringify(message)
     if (blockchainProvider.id === this.blockchainProviders.ixo_keysafe.id) {      
       this.blockchainProviders.ixo_keysafe.provider.requestSigning(message, (error, response)=> {
         //alert(`Dashboard handling received response for SIGN response: ${JSON.stringify(response)}, error: ${JSON.stringify(error)}`)
         console.log(`Dashboard handling received response for SIGN response: \n${JSON.stringify(response)}\n, error: \n${JSON.stringify(error)}\n`)
-        this.state.ixo.project.createProject(JSON.parse(message), response, 'http://localhost:5000/').then((result) => {
+        this.state.ixo.project.createProject(JSON.parse(message), response, PDSURL ).then((result) => {
           console.log(`Project Details:   \n${JSON.stringify(result)}`)
           alert(`Charity Creation Result:  \n${JSON.stringify(result)}`)
       }) 
@@ -176,6 +180,11 @@ export default class Dashboard extends React.Component {
         <br></br>
 
 
+        <input value={this.state.messageBody2} onChange={this.handleMessageBodyChanged2} />      PDS url
+        <br></br>
+        (Include http:// and end url with trailing '/')
+        <br></br>
+        <br></br>
         <input value={this.state.messageBody} onChange={this.handleMessageBodyChanged} />
         {this.blockchainProviders.ixo_keysafe.doShow && 
           <Launchbutton
@@ -183,6 +192,8 @@ export default class Dashboard extends React.Component {
             title="ixo Sign and Create" 
             handleLaunchEvent={this.handleExtensionLaunch}/>          
         }
+
+        
         {this.blockchainProviders.metamask.doShow && 
           <Launchbutton
             provider={this.blockchainProviders.metamask.id}
