@@ -133,10 +133,16 @@ export default class Dashboard extends React.Component {
       this.blockchainProviders.ixo_keysafe.provider.requestSigning(message, (error, response)=> {
         //alert(`Dashboard handling received response for SIGN response: ${JSON.stringify(response)}, error: ${JSON.stringify(error)}`)
         console.log(`Dashboard handling received response for SIGN response: \n${JSON.stringify(response)}\n, error: \n${JSON.stringify(error)}\n`)
-        this.state.ixo.project.createProject(JSON.parse(message), response, PDSURL ).then((result) => {
-          console.log(`Project Details:   \n${JSON.stringify(result)}`)
-          alert(`Charity Creation Result:  \n${JSON.stringify(result)}`)
-      }) 
+        try {
+          this.state.ixo.project.createProject(JSON.parse(message), response, PDSURL ).then((result) => {
+            console.log(`Project Details:   \n${JSON.stringify(result)}`)
+            alert(`Charity Creation Result:  \n${JSON.stringify(result)}`)
+        })
+        } catch (error) {
+          console.log("Incorrect PDS URL format")
+          alert("Incorrect PDS URL format")
+        }
+        
       })
       return
     } else {
