@@ -136,7 +136,7 @@ export default class Dashboard extends React.Component {
         try {
           this.state.ixo.project.createProject(JSON.parse(message), response, PDSURL ).then((result) => {
             console.log(`Project Details:   \n${JSON.stringify(result)}`)
-            alert(`Charity Creation Result:  \n${JSON.stringify(result)}`)
+            alert(`Project Creation Result:  \n${JSON.stringify(result)}`)
         })
         } catch (error) {
           console.log("Incorrect PDS URL format")
