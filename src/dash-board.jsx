@@ -2,13 +2,16 @@ import React from 'react';
 import { Ixo } from 'ixo-module';
 import Launchbutton from './launch-button';
 import Web3 from 'web3';
+import { Redirect } from 'react-router-dom';
+import swal from 'sweetalert';
+
 
 export default class Dashboard extends React.Component {
   
   constructor(props) {
     super(props);
-   
-    this.state = {messageBody: '', ixo: null, messageBody2: ''}
+
+    this.state = {messageBody: '', ixo: null, messageBody2: '', redirect: false}
 
     this.blockchainProviders = {
       metamask: {id: 0, doShow: false, windowKey: "web3", extension: "Metamask", provider: null},
@@ -21,6 +24,7 @@ export default class Dashboard extends React.Component {
     this.handleMessageBodyChanged2 = this.handleMessageBodyChanged2.bind(this);
     this.getEthereumAddressAsync = this.getEthereumAddressAsync.bind(this);
     this.handleRequestInfoButtonClicked = this.handleRequestInfoButtonClicked.bind(this)
+    this.renderRedirect = this.renderRedirect.bind(this);
 
     if (this.blockchainProviders.metamask.doShow) {
       this.initProvider(this.blockchainProviders.metamask);
@@ -30,6 +34,17 @@ export default class Dashboard extends React.Component {
     }
 
     this.signMessageWithProvider = this.signMessageWithProvider.bind(this);
+  }
+
+  setRedirect = () => {
+    this.setState({
+      redirect: true
+    })
+  }
+  renderRedirect = () => {
+    if (this.state.redirect) {
+      return <Redirect to='https://ixo.foundation/'/>
+    }
   }
 
   componentDidMount() {
@@ -135,11 +150,21 @@ export default class Dashboard extends React.Component {
         try {
           this.state.ixo.project.createProject(JSON.parse(message), response, PDSURL ).then((result) => {
             console.log(`Project Details:   \n${JSON.stringify(result)}`)
-            alert(`Project Creation Result:  \n${JSON.stringify(result)}`)
-        })
+            swal({
+              title: 'Your project has been created!',
+                text: 'You can find your new project on the ixo website with other current projects. \n \n Click OK to be redirected to the ixo website',       
+                type: "success"
+              })
+              .then(redirect => {
+                if(redirect) {
+                  window.location.href = 'https://ixo.foundation/';
+                } 
+                });
+
+          })
         } catch (error) {
           console.log("Incorrect PDS URL format")
-          alert("Incorrect PDS URL format")
+          swal("ERROR","Incorrect PDS URL format", "error")
         }
         
       })
@@ -196,7 +221,8 @@ export default class Dashboard extends React.Component {
           <Launchbutton
             provider={this.blockchainProviders.ixo_keysafe.id}
             title="ixo Sign and Create" 
-            handleLaunchEvent={this.handleExtensionLaunch}/>          
+            handleLaunchEvent={this.handleExtensionLaunch}/>  
+    
         }
 
         
