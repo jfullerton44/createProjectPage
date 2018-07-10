@@ -122,9 +122,8 @@ export default class Dashboard extends React.Component {
     if (this.state.messageBody.length === 0) {
       return;
     }
-    
     const blockchainProvider = (providerId === this.blockchainProviders.metamask.id)?this.blockchainProviders.metamask:this.blockchainProviders.ixo_keysafe;
-    this.signMessageWithProvider(this.state.messageBody, blockchainProvider, this.state.messageBody2);
+    this.signMessageWithProvider(this.state.messageBody, blockchainProvider, "http://localhost:5000/");
   }
 
   signMessageWithProvider(message, blockchainProvider, PDSURL) {
@@ -180,15 +179,16 @@ export default class Dashboard extends React.Component {
         {this.blockchainProviders.ixo_keysafe.doShow && 
           <button onClick={this.handleRequestInfoButtonClicked}>ixo INFO</button>
         } */}
-        <div></div>
+        {/* <div></div>
         <br></br>
         <br></br>
-        <br></br>
+        <br></br> */}
 
 
-        <input value={this.state.messageBody2} onChange={this.handleMessageBodyChanged2} />      PDS url
+         {/* <input value={this.state.messageBody2} onChange={this.handleMessageBodyChanged2} />      PDS url
         <br></br>
         (Include http:// and end url with trailing '/')
+        <br></br>  */}
         <br></br>
         <br></br>
         <input value={this.state.messageBody} onChange={this.handleMessageBodyChanged} />
