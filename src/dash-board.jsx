@@ -11,7 +11,7 @@ export default class Dashboard extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {messageBody: '', ixo: null, messageBody2: '', redirect: false}
+    this.state = {messageBody: '', ixo: null, messageBody2: ''}
 
     this.blockchainProviders = {
       metamask: {id: 0, doShow: false, windowKey: "web3", extension: "Metamask", provider: null},
@@ -24,7 +24,6 @@ export default class Dashboard extends React.Component {
     this.handleMessageBodyChanged2 = this.handleMessageBodyChanged2.bind(this);
     this.getEthereumAddressAsync = this.getEthereumAddressAsync.bind(this);
     this.handleRequestInfoButtonClicked = this.handleRequestInfoButtonClicked.bind(this)
-    this.renderRedirect = this.renderRedirect.bind(this);
 
     if (this.blockchainProviders.metamask.doShow) {
       this.initProvider(this.blockchainProviders.metamask);
@@ -34,17 +33,6 @@ export default class Dashboard extends React.Component {
     }
 
     this.signMessageWithProvider = this.signMessageWithProvider.bind(this);
-  }
-
-  setRedirect = () => {
-    this.setState({
-      redirect: true
-    })
-  }
-  renderRedirect = () => {
-    if (this.state.redirect) {
-      return <Redirect to='https://ixo.foundation/'/>
-    }
   }
 
   componentDidMount() {
@@ -160,7 +148,6 @@ export default class Dashboard extends React.Component {
                   window.location.href = 'https://ixo.foundation/';
                 } 
                 });
-
           })
         } catch (error) {
           console.log("Incorrect PDS URL format")
