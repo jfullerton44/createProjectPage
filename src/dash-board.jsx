@@ -187,13 +187,11 @@ export default class Dashboard extends React.Component {
     console.log('Document hash: ' + result);
   }
 
-
-
   // have user sign and upload their project
   signMessageWithProvider(message, blockchainProvider, PDSURL) {
     // encode the claim schema and claim form json strings and upload them to pds
-    var encodedClaimSchema = encode(claimSchemaJSON);
-    var encodedClaimForm = encode(claimFormJSON);
+    var encodedClaimSchema = encode(messageBody2);
+    var encodedClaimForm = encode(messageBody3);
     var schemaHash = uploadDoc(encodedClaimSchema, PDSURL);
     var formHash = uploadDoc(encodedClaimForm, PDSURL);
 
