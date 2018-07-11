@@ -7,23 +7,27 @@ import swal from 'sweetalert';
 
 
 export default class Dashboard extends React.Component {
-  
+
   constructor(props) {
     super(props);
 
-    this.state = {messageBody: '', ixo: null, messageBody2: ''}
+    this.state = { messageBody: '', ixo: null, messageBody2: '', messageBody3: '' }
 
     this.blockchainProviders = {
-      metamask: {id: 0, doShow: false, windowKey: "web3", extension: "Metamask", provider: null},
-      ixo_keysafe: {id: 1, doShow: true, windowKey: "ixoKs", extension: "IXO Keysafe", provider: null}
+      metamask: { id: 0, doShow: false, windowKey: "web3", extension: "Metamask", provider: null },
+      ixo_keysafe: { id: 1, doShow: true, windowKey: "ixoKs", extension: "IXO Keysafe", provider: null }
     };
 
     // This binding is necessary to make `this` work in the callback
     this.handleExtensionLaunch = this.handleExtensionLaunch.bind(this);
     this.handleMessageBodyChanged = this.handleMessageBodyChanged.bind(this);
     this.handleMessageBodyChanged2 = this.handleMessageBodyChanged2.bind(this);
+    this.handleMessageBodyChanged3 = this.handleMessageBodyChanged3.bind(this);
     this.getEthereumAddressAsync = this.getEthereumAddressAsync.bind(this);
-    this.handleRequestInfoButtonClicked = this.handleRequestInfoButtonClicked.bind(this)
+    this.handleRequestInfoButtonClicked = this.handleRequestInfoButtonClicked.bind(this);
+    this.handleFormButtonClicked = this.handleFormButtonClicked.bind(this);
+    this.handleSchemaButtonClicked = this.handleSchemaButtonClicked.bind(this);
+
 
     if (this.blockchainProviders.metamask.doShow) {
       this.initProvider(this.blockchainProviders.metamask);
@@ -33,53 +37,54 @@ export default class Dashboard extends React.Component {
     }
 
     this.signMessageWithProvider = this.signMessageWithProvider.bind(this);
+    this.signData = this.signData.bind(this);
   }
 
   componentDidMount() {
     this.setState({ ixo: new Ixo() });
   }
 
-  handleRequestInfoButtonClicked (e) {
-    this.blockchainProviders.ixo_keysafe.provider.getInfo((error, response)=>{
+  handleRequestInfoButtonClicked(e) {
+    this.blockchainProviders.ixo_keysafe.provider.getInfo((error, response) => {
       alert(`Dashboard handling received response for INFO response: ${JSON.stringify(response)}, error: ${JSON.stringify(error)}`)
-    })    
+    })
   }
 
   handleSimulateDidDocLedgeringButtonClicked = (e) => {
-    this.blockchainProviders.ixo_keysafe.provider.getDidDoc((error, didDocResponse)=>{
+    this.blockchainProviders.ixo_keysafe.provider.getDidDoc((error, didDocResponse) => {
       if (error) {
         alert(`Simulate DID Doc retrieval error: ${JSON.stringify(error)}`)
       } else {
         console.log(`Simulate signing DID Doc retrieval response: \n${JSON.stringify(didDocResponse)}\n`)
-        this.blockchainProviders.ixo_keysafe.provider.requestSigning(JSON.stringify(didDocResponse), (error, signatureResponse)=>{
+        this.blockchainProviders.ixo_keysafe.provider.requestSigning(JSON.stringify(didDocResponse), (error, signatureResponse) => {
           if (error) {
             alert(`Simulate DID Doc signing error: ${JSON.stringify(error)}`)
           } else {
             console.log(`Simulate signing DID Doc  SIGN response: \n${JSON.stringify(signatureResponse)}\n, error: ${JSON.stringify(error)}`)
 
-            const {signatureValue, created} = signatureResponse
+            const { signatureValue, created } = signatureResponse
             const ledgerObjectJson = this.generateLedgerObjectJson(didDocResponse, signatureValue, created)
             const ledgerObjectUppercaseHex = new Buffer(ledgerObjectJson).toString("hex").toUpperCase()
             const ledgeringEndpoint = `http://35.192.187.110:46657/broadcast_tx_sync?tx=0x${ledgerObjectUppercaseHex}`
 
-            this.performLedgeringHttpRequest(ledgeringEndpoint, (response)=>{
+            this.performLedgeringHttpRequest(ledgeringEndpoint, (response) => {
               console.log(`success callback from perform ledgering HTTP call response: \n${response}`)
               alert(`success callback from perform ledgering HTTP call response: ${response}`)
-            }, (status, text)=>{
+            }, (status, text) => {
               console.log(`failure callback from perform ledgering HTTP call status: \n${status}\ntext: \n${text}`)
               alert(`failure callback from perform ledgering HTTP call status: \n${status}, text: \n${text}`)
             })
           }
         })
-      }      
-    })    
+      }
+    })
   }
 
 
   performLedgeringHttpRequest = (url, success, failure) => {
     var request = new XMLHttpRequest()
     request.open("GET", url, true);
-    request.onreadystatechange = function() {
+    request.onreadystatechange = function () {
       if (request.readyState === 4) {
         if (request.status === 200)
           success(request.responseText);
@@ -92,9 +97,9 @@ export default class Dashboard extends React.Component {
 
   generateLedgerObjectJson = (didDoc, signature, created) => {
     const signatureValue = [1, signature]
-    return JSON.stringify({payload: [10, didDoc], signature: {signatureValue, created}})
+    return JSON.stringify({ payload: [10, didDoc], signature: { signatureValue, created } })
   }
- 
+
   initProvider(blockchainProvider) {
     if (!window[blockchainProvider.windowKey]) {
       blockchainProvider.doShow = false;
@@ -108,15 +113,19 @@ export default class Dashboard extends React.Component {
           const IxoKeysafeInpageProvider = window[blockchainProvider.windowKey]
           blockchainProvider.provider = new IxoKeysafeInpageProvider();
         }
-      }  
+      }
     }
   }
 
   handleMessageBodyChanged(e) {
-    this.setState({messageBody: e.target.value});
+    this.setState({ messageBody: e.target.value });
   }
   handleMessageBodyChanged2(e) {
-    this.setState({messageBody2: e.target.value});
+    this.setState({ messageBody2: e.target.value });
+  }
+
+  handleMessageBodyChanged3(e) {
+    this.setState({ messageBody3: e.target.value });
   }
 
   handleExtensionLaunch(providerId) {
@@ -125,101 +134,153 @@ export default class Dashboard extends React.Component {
     if (this.state.messageBody.length === 0) {
       return;
     }
-    const blockchainProvider = (providerId === this.blockchainProviders.metamask.id)?this.blockchainProviders.metamask:this.blockchainProviders.ixo_keysafe;
+    const blockchainProvider = (providerId === this.blockchainProviders.metamask.id) ? this.blockchainProviders.metamask : this.blockchainProviders.ixo_keysafe;
     this.signMessageWithProvider(this.state.messageBody, blockchainProvider, "http://localhost:5000/");
   }
 
-  signMessageWithProvider(message, blockchainProvider, PDSURL) {
-    //JSON.stringify(message)
-    if (blockchainProvider.id === this.blockchainProviders.ixo_keysafe.id) {      
-      this.blockchainProviders.ixo_keysafe.provider.requestSigning(message, (error, response)=> {
-        //alert(`Dashboard handling received response for SIGN response: ${JSON.stringify(response)}, error: ${JSON.stringify(error)}`)
+  handleSchemaButtonClicked(providerId) {
+    if (this.state.messageBody2.length === 0) {
+      return;
+    }
+    const blockchainProvider = (providerId === this.blockchainProviders.metamask.id) ? this.blockchainProviders.metamask : this.blockchainProviders.ixo_keysafe;
+    this.signData(this.state.messageBody2, blockchainProvider);
+  }
+
+
+  handleFormButtonClicked(providerId) {
+    if (this.state.messageBody3.length === 0) {
+      return;
+    }
+    const blockchainProvider = (providerId === this.blockchainProviders.metamask.id) ? this.blockchainProviders.metamask : this.blockchainProviders.ixo_keysafe;
+    this.signData(this.state.messageBody3, blockchainProvider);
+  }
+
+  signData(message, blockchainProvider) {
+    if (blockchainProvider.id === this.blockchainProviders.ixo_keysafe.id) {
+      this.blockchainProviders.ixo_keysafe.provider.requestSigning(message, (error, response) => {
         console.log(`Dashboard handling received response for SIGN response: \n${JSON.stringify(response)}\n, error: \n${JSON.stringify(error)}\n`)
-        try {
-          this.state.ixo.project.createProject(JSON.parse(message), response, PDSURL ).then((result) => {
-            console.log(`Project Details:   \n${JSON.stringify(result)}`)
-            swal({
-              title: 'Your project has been created!',
-                text: 'You can find your new project on the ixo website with other current projects. \n \n Click OK to be redirected to the ixo website',       
-                type: "success"
-              })
-              .then(redirect => {
-                if(redirect) {
-                  window.location.href = 'https://ixo.foundation/';
-                } 
-                });
-          })
-        } catch (error) {
-          console.log("Incorrect PDS URL format")
-          swal("ERROR","Incorrect PDS URL format", "error")
-        }
-        
       })
       return
     } else {
-      this.getEthereumAddressAsync().then(address=>{
+      this.getEthereumAddressAsync().then(address => {
         console.log(`${blockchainProvider.extension} -> Address: ${address}`);
-  
+
         // actual signing ->>
         var dataInHex = '0x' + new Buffer(message).toString('hex');
-  
+
         blockchainProvider.provider.eth.personal.sign(dataInHex, address, "test password!")
-        .then(console.log);
+          .then(console.log);
       });
-    }  
+    }
   }
 
-  getEthereumAddressAsync() {
-    const eth = this.blockchainProviders.metamask.provider.eth;
-    return new Promise((resolve, reject)=>{
-      // resolve(provider.debug());
-      eth.getAccounts(function (error, accounts) {
-        if (error || 0 === accounts.length) {
-          reject(error);
-        }
-        resolve(accounts[0]);
-      });
+
+
+signMessageWithProvider(message, blockchainProvider, PDSURL) {
+  //JSON.stringify(message)
+  if (blockchainProvider.id === this.blockchainProviders.ixo_keysafe.id) {
+    this.blockchainProviders.ixo_keysafe.provider.requestSigning(message, (error, response) => {
+      //alert(`Dashboard handling received response for SIGN response: ${JSON.stringify(response)}, error: ${JSON.stringify(error)}`)
+      console.log(`Dashboard handling received response for SIGN response: \n${JSON.stringify(response)}\n, error: \n${JSON.stringify(error)}\n`)
+      try {
+        this.state.ixo.project.createProject(JSON.parse(message), response, PDSURL).then((result) => {
+          console.log(`Project Details:   \n${JSON.stringify(result)}`)
+          swal({
+            title: 'Your project has been created!',
+            text: 'You can find your new project on the ixo website with other current projects. \n \n Click OK to be redirected to the ixo website',
+            type: "success"
+          })
+            .then(redirect => {
+              if (redirect) {
+                window.location.href = 'https://ixo.foundation/';
+              }
+            });
+        })
+      } catch (error) {
+        console.log("Incorrect PDS URL format")
+        swal("ERROR", "Incorrect PDS URL format", "error")
+      }
+
+    })
+    return
+  } else {
+    this.getEthereumAddressAsync().then(address => {
+      console.log(`${blockchainProvider.extension} -> Address: ${address}`);
+
+      // actual signing ->>
+      var dataInHex = '0x' + new Buffer(message).toString('hex');
+
+      blockchainProvider.provider.eth.personal.sign(dataInHex, address, "test password!")
+        .then(console.log);
     });
   }
+}
 
-  render() {
-    return (
-      <div>
-        {/* {this.blockchainProviders.ixo_keysafe.doShow && 
+getEthereumAddressAsync() {
+  const eth = this.blockchainProviders.metamask.provider.eth;
+  return new Promise((resolve, reject) => {
+    // resolve(provider.debug());
+    eth.getAccounts(function (error, accounts) {
+      if (error || 0 === accounts.length) {
+        reject(error);
+      }
+      resolve(accounts[0]);
+    });
+  });
+}
+
+render() {
+  return (
+    <div>
+      {/* {this.blockchainProviders.ixo_keysafe.doShow && 
           <button onClick={this.handleSimulateDidDocLedgeringButtonClicked}>Ledger DID Manually</button>
         }
         {this.blockchainProviders.ixo_keysafe.doShow && 
           <button onClick={this.handleRequestInfoButtonClicked}>ixo INFO</button>
         } */}
-        {/* <div></div>
+      {/* <div></div>
         <br></br>
         <br></br>
         <br></br> */}
 
+      <br></br>
+      <input value={this.state.messageBody2} onChange={this.handleMessageBodyChanged2} />
+      <Launchbutton
+        provider={this.blockchainProviders.ixo_keysafe.id}
+        title="Sign Schema"
+        handleLaunchEvent={this.handleSchemaButtonClicked} />
+        <br></br>
+        Paste the Schema into the above textbox to Sign
 
-         {/* <input value={this.state.messageBody2} onChange={this.handleMessageBodyChanged2} />      PDS url
+      <br></br>
+      <br></br>
+      <input value={this.state.messageBody3} onChange={this.handleMessageBodyChanged3} />
+      <Launchbutton
+        provider={this.blockchainProviders.ixo_keysafe.id}
+        title="Sign Form"
+        handleLaunchEvent={this.handleFormButtonClicked} />
         <br></br>
-        (Include http:// and end url with trailing '/')
-        <br></br>  */}
-        <br></br>
-        <br></br>
-        <input value={this.state.messageBody} onChange={this.handleMessageBodyChanged} />
-        {this.blockchainProviders.ixo_keysafe.doShow && 
-          <Launchbutton
-            provider={this.blockchainProviders.ixo_keysafe.id}
-            title="ixo Sign and Create" 
-            handleLaunchEvent={this.handleExtensionLaunch}/>  
-    
-        }
+        Paste the Form into the above textbox to Sign
+      <br></br>
+      <br></br>
+      <br></br>
+      <input value={this.state.messageBody} onChange={this.handleMessageBodyChanged} />
+      {this.blockchainProviders.ixo_keysafe.doShow &&
+        <Launchbutton
+          provider={this.blockchainProviders.ixo_keysafe.id}
+          title="ixo Sign and Create"
+          handleLaunchEvent={this.handleExtensionLaunch} />
 
-        
-        {this.blockchainProviders.metamask.doShow && 
-          <Launchbutton
-            provider={this.blockchainProviders.metamask.id}
-            title="Metamask Sign" 
-            handleLaunchEvent={this.handleExtensionLaunch}/>
-        }
-      </div>      
+      }
+
+
+      {this.blockchainProviders.metamask.doShow &&
+        <Launchbutton
+          provider={this.blockchainProviders.metamask.id}
+          title="Metamask Sign"
+          handleLaunchEvent={this.handleExtensionLaunch} />
+      }
+    </div>
   )
-  }
+}
 }
