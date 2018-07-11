@@ -181,7 +181,7 @@ export default class Dashboard extends React.Component {
     // var utf8 = require('utf8');
     // var binaryToBase64 = require('binaryToBase64');
     var bytes = utf8.encode(text);
-    var encoded = base64.encoded(bytes);
+    var encoded = base64.encode(bytes);
     console.log("Enoded string: " + encoded);
     return encoded;
   }
