@@ -12,7 +12,7 @@ export default class Dashboard extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { messageBody: '', ixo: null, messageBody2: '', messageBody3: '' }
+    this.state = { messageBody: '', ixo: null, messageBody2: '', messageBody3: '', stateVar: null }
 
     this.blockchainProviders = {
       metamask: { id: 0, doShow: false, windowKey: "web3", extension: "Metamask", provider: null },
@@ -182,16 +182,22 @@ export default class Dashboard extends React.Component {
     // var binaryToBase64 = require('binaryToBase64');
     var bytes = utf8.encode(text);
     var encoded = base64.encode(bytes);
-    console.log("Enoded string: " + encoded);
     return encoded;
   }
 
   // upload documents to pds
   uploadDoc(text, PDSURL) {
-    let dataUrl = 'data:application/json;base64, ' + this.encode(text);
-    var result = this.ixo.project.createPublic(dataUrl, PDSURL);
+    let dataUrl = 'data:application/json;base64, ' + this.encodeJSON(text);
+    // var result = this.state.ixo.project.createPublic(dataUrl, PDSURL);
+    var hash = this.state.ixo.project.createPublic(dataUrl, PDSURL).then((result) => {
+      this.stateVar = result;
+      console.log("stateVar: " + this.stateVar)
+      return this.stateVar.result;
+    });
     // result = ixo.project.createPublic(dataUrl, PDSURL).result; 
-    console.log('Document hash: ' + result);
+    console.log("stateVar" + this.stateVar);
+    console.log('Document hash: ' + hash);
+    
   }
 
   // have user sign and upload their project
@@ -207,6 +213,8 @@ export default class Dashboard extends React.Component {
     console.log("form hash: " + formHash);
 
     // insert hashes into project.json
+    console.log
+    console.log("message: " + message['templates']);
     message["templates"]["claim"]["schema"] = schemaHash;
     message["templates"]["claim"]["form"] = formHash;
     console.log("Project json after insertions: " + message)
