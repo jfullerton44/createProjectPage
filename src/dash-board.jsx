@@ -3,6 +3,8 @@ import { Ixo } from 'ixo-module';
 import Launchbutton from './launch-button';
 import Web3 from 'web3';
 import swal from 'sweetalert';
+import utf8 from 'utf8';
+import base64 from 'base-64'
 
 
 export default class Dashboard extends React.Component {
@@ -26,6 +28,9 @@ export default class Dashboard extends React.Component {
     this.handleRequestInfoButtonClicked = this.handleRequestInfoButtonClicked.bind(this)
     this.handleFormButtonClicked = this.handleFormButtonClicked.bind(this);
     this.handleSchemaButtonClicked = this.handleSchemaButtonClicked.bind(this);
+    this.encodeJSON = this.encodeJSON.bind(this);
+    this.uploadDoc = this.uploadDoc.bind(this);
+
     if (this.blockchainProviders.metamask.doShow) {
       this.initProvider(this.blockchainProviders.metamask);
     }
@@ -172,19 +177,19 @@ export default class Dashboard extends React.Component {
   }
 
   // bit64 encoding function; "text" parameter is a json string
-  encode(text) {
-    var utf8 = require('utf8');
-    var binaryToBase64 = require('binaryToBase64');
+  encodeJSON(text) {
+    // var utf8 = require('utf8');
+    // var binaryToBase64 = require('binaryToBase64');
     var bytes = utf8.encode(text);
-    var encoded = binaryToBase64(bytes);
+    var encoded = base64.encoded(bytes);
     console.log("Enoded string: " + encoded);
     return encoded;
   }
 
   // upload documents to pds
   uploadDoc(text, PDSURL) {
-    let dataUrl = 'data:application/json;base64, ' + encode(text);
-    result = ixo.project.createPublic(dataUrl, PDSURL);
+    let dataUrl = 'data:application/json;base64, ' + this.encode(text);
+    var result = this.ixo.project.createPublic(dataUrl, PDSURL);
     // result = ixo.project.createPublic(dataUrl, PDSURL).result; 
     console.log('Document hash: ' + result);
   }
@@ -192,20 +197,20 @@ export default class Dashboard extends React.Component {
   // have user sign and upload their project
   signMessageWithProvider(message, blockchainProvider, PDSURL) {
     // encode the claim schema and claim form json strings and upload them to pds
-    var encodedClaimSchema = encode(messageBody2);
+    var encodedClaimSchema = this.encodeJSON(this.state.messageBody2);
     console.log("Encoded schema json: " + encodedClaimSchema);
-    var encodedClaimForm = encode(messageBody3);
+    var encodedClaimForm = this.encodeJSON(this.state.messageBody3);
     console.log("Encoded form json: " + encodedClaimForm);
-    var schemaHash = uploadDoc(encodedClaimSchema, PDSURL);
+    var schemaHash = this.uploadDoc(encodedClaimSchema, PDSURL);
     console.log("schema hash: " + schemaHash);
-    var formHash = uploadDoc(encodedClaimForm, PDSURL);
+    var formHash = this.uploadDoc(encodedClaimForm, PDSURL);
     console.log("form hash: " + formHash);
 
     // insert hashes into project.json
     message["templates"]["claim"]["schema"] = schemaHash;
     message["templates"]["claim"]["form"] = formHash;
     console.log("Project json after insertions: " + message)
-    
+
     if (blockchainProvider.id === this.blockchainProviders.ixo_keysafe.id) {
       this.blockchainProviders.ixo_keysafe.provider.requestSigning(message, (error, response) => {
         //alert(`Dashboard handling received response for SIGN response: ${JSON.stringify(response)}, error: ${JSON.stringify(error)}`)
@@ -293,20 +298,12 @@ export default class Dashboard extends React.Component {
         <br></br>
         <br></br>
         <input value={this.state.messageBody} onChange={this.handleMessageBodyChanged} />
-        {this.blockchainProviders.ixo_keysafe.doShow &&
           <Launchbutton
             provider={this.blockchainProviders.ixo_keysafe.id}
             title="ixo Sign and Create"
-            handleLaunchEvent={this.handleExtensionLaunch} />
-        }
+            handleLaunchEvent={this.handleExtensionLaunch} />        
+         {this.blockchainProviders.ixo_keysafe.doShow}
 
-
-        {this.blockchainProviders.metamask.doShow &&
-          <Launchbutton
-            provider={this.blockchainProviders.metamask.id}
-            title="Metamask Sign"
-            handleLaunchEvent={this.handleExtensionLaunch} />
-        }
       </div>
     )
   }

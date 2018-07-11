@@ -7,6 +7,7 @@
     "node": "8.11.2"
   },
   "dependencies": {
+    "base-64": "^0.1.0",
     "ethjs-query": "^0.3.8",
     "ixo-module": "^1.4.55",
     "react": "^16.3.2",
@@ -14,6 +15,7 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4",
     "sweetalert": "^2.1.0",
+    "utf8": "^3.0.0",
     "web3": "^1.0.0-beta.34"
   },
   "scripts": {
