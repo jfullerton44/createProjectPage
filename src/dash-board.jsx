@@ -177,6 +177,7 @@ export default class Dashboard extends React.Component {
     var binaryToBase64 = require('binaryToBase64');
     var bytes = utf8.encode(text);
     var encoded = binaryToBase64(bytes);
+    console.log("Enoded string: " + encoded);
     return encoded;
   }
 
@@ -184,6 +185,7 @@ export default class Dashboard extends React.Component {
   uploadDoc(text, PDSURL) {
     let dataUrl = 'data:application/json;base64, ' + encode(text);
     result = ixo.project.createPublic(dataUrl, PDSURL);
+    // result = ixo.project.createPublic(dataUrl, PDSURL).result; 
     console.log('Document hash: ' + result);
   }
 
@@ -191,13 +193,19 @@ export default class Dashboard extends React.Component {
   signMessageWithProvider(message, blockchainProvider, PDSURL) {
     // encode the claim schema and claim form json strings and upload them to pds
     var encodedClaimSchema = encode(messageBody2);
+    console.log("Encoded schema json: " + encodedClaimSchema);
     var encodedClaimForm = encode(messageBody3);
+    console.log("Encoded form json: " + encodedClaimForm);
     var schemaHash = uploadDoc(encodedClaimSchema, PDSURL);
+    console.log("schema hash: " + schemaHash);
     var formHash = uploadDoc(encodedClaimForm, PDSURL);
+    console.log("form hash: " + formHash);
 
     // insert hashes into project.json
     message["templates"]["claim"]["schema"] = schemaHash;
     message["templates"]["claim"]["form"] = formHash;
+    console.log("Project json after insertions: " + message)
+    
     if (blockchainProvider.id === this.blockchainProviders.ixo_keysafe.id) {
       this.blockchainProviders.ixo_keysafe.provider.requestSigning(message, (error, response) => {
         //alert(`Dashboard handling received response for SIGN response: ${JSON.stringify(response)}, error: ${JSON.stringify(error)}`)
