@@ -5,6 +5,7 @@ import Web3 from 'web3';
 import swal from 'sweetalert';
 import utf8 from 'utf8';
 import base64 from 'base-64'
+import { ENGINE_METHOD_DIGESTS } from 'constants';
 
 
 export default class Dashboard extends React.Component {
@@ -12,7 +13,7 @@ export default class Dashboard extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { messageBody: '', ixo: null, messageBody2: '', messageBody3: '', stateHash: null, projectJSON: '' }
+    this.state = { messageBody: '', ixo: null, messageBody2: '', messageBody3: '', stateHash: null }
 
     this.blockchainProviders = {
       metamask: { id: 0, doShow: false, windowKey: "web3", extension: "Metamask", provider: null },
@@ -204,14 +205,20 @@ export default class Dashboard extends React.Component {
       if (type == "schema") {
         console.log("schema hash: " + JSON.stringify(result.result));
         projectJSON['templates']['schema'] = JSON.stringify(result.result);
+        this.state.messageBody = projectJSON; 
+        
       }
       if (type == "form") {
         console.log("form hash: " + JSON.stringify(result.result));
         projectJSON['templates']['form'] = JSON.stringify(result.result);
+        // update the state of messageBody to reflect new addition
+        this.state.messageBody = projectJSON;
 
       }
       // check to see if templates were inserted into project json 
+      // console.log("Project JSON templates section after additions: " + JSON.stringify(projectJSON['templates']));
       console.log("Project JSON templates section after additions: " + JSON.stringify(projectJSON['templates']));
+
 
     }).catch((error) => {
       console.log("Error, unable to return hash");
@@ -226,15 +233,12 @@ export default class Dashboard extends React.Component {
     console.log("Encoded schema json: " + encodedClaimSchema);
     var encodedClaimForm = this.encodeJSON(this.state.messageBody3);
     console.log("Encoded form json: " + encodedClaimForm);
-    var schemaHash = this.uploadAndInsert(encodedClaimSchema, PDSURL, message, "schema");
-    var formHash = this.uploadAndInsert(encodedClaimForm, PDSURL, message, "form");
+    // var schemaHash = this.uploadAndInsert(encodedClaimSchema, PDSURL, message, "schema");
+    // var formHash = this.uploadAndInsert(encodedClaimForm, PDSURL, message, "form");
+    var schemaHash = this.uploadAndInsert(encodedClaimSchema, PDSURL, this.state.messageBody, "schema");
+    var formHash = this.uploadAndInsert(encodedClaimForm, PDSURL, this.state.messageBody, "form");
 
-    // insert hashes into project.json
-    // var projectJSON = JSON.parse(message);
-    // console.log("message: " + JSON.stringify(projectJSON['templates']));
-    // projectJSON["templates"]["claim"]["schema"] = schemaHash;
-    // projectJSON["templates"]["claim"]["form"] = formHash;
-    // console.log("Project json after insertions: " + message)
+
 
     if (blockchainProvider.id === this.blockchainProviders.ixo_keysafe.id) {
       this.blockchainProviders.ixo_keysafe.provider.requestSigning(message, (error, response) => {
