@@ -12,7 +12,7 @@ export default class Dashboard extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { messageBody: '', ixo: null, messageBody2: '', messageBody3: '', stateVar: null }
+    this.state = { messageBody: '', ixo: null, messageBody2: '', messageBody3: '', stateHash: null }
 
     this.blockchainProviders = {
       metamask: { id: 0, doShow: false, windowKey: "web3", extension: "Metamask", provider: null },
@@ -187,16 +187,17 @@ export default class Dashboard extends React.Component {
 
   // upload documents to pds
   uploadDoc(text, PDSURL) {
-    let dataUrl = 'data:application/json;base64, ' + this.encodeJSON(text);
-    // var result = this.state.ixo.project.createPublic(dataUrl, PDSURL);
-    var hash = this.state.ixo.project.createPublic(dataUrl, PDSURL).then((result) => {
-      this.stateVar = result;
-      console.log("stateVar: " + this.stateVar)
-      return this.stateVar.result;
+    let dataUrl = 'data:application/json;base64, ' + text;
+    var hash = this.state.ixo.project.createPublic(dataUrl, PDSURL).then((result) => {    
+      console.log("result: " + result);
+      console.log("hash: " + hash);
+    }).catch((error) => {
+      console.log("Error, unable to return hash");
+      console.log(error);
     });
     // result = ixo.project.createPublic(dataUrl, PDSURL).result; 
-    console.log("stateVar" + this.stateVar);
-    console.log('Document hash: ' + hash);
+    // console.log("stateVar" + this.stateVar);
+    // console.log('Document hash: ' + hash);
     
   }
 
@@ -213,10 +214,10 @@ export default class Dashboard extends React.Component {
     console.log("form hash: " + formHash);
 
     // insert hashes into project.json
-    console.log
-    console.log("message: " + message['templates']);
-    message["templates"]["claim"]["schema"] = schemaHash;
-    message["templates"]["claim"]["form"] = formHash;
+    var projectJSON = JSON.parse(message);
+    console.log("message: " + projectJSON['templates']);
+    projectJSON["templates"]["claim"]["schema"] = schemaHash;
+    projectJSON["templates"]["claim"]["form"] = formHash;
     console.log("Project json after insertions: " + message)
 
     if (blockchainProvider.id === this.blockchainProviders.ixo_keysafe.id) {
