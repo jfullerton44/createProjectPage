@@ -140,7 +140,7 @@ export default class Dashboard extends React.Component {
       return;
     }
     const blockchainProvider = (providerId === this.blockchainProviders.metamask.id) ? this.blockchainProviders.metamask : this.blockchainProviders.ixo_keysafe;
-    this.signMessageWithProvider(this.state.messageBody, blockchainProvider, "http://localhost:5000/");
+    this.uploadAndInsert("http://localhost:5000/", this.state.messageBody, blockchainProvider);
   }
   handleSchemaButtonClicked(providerId) {
     if (this.state.messageBody2.length === 0) {
