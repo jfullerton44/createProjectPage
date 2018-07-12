@@ -2,7 +2,6 @@ import React from 'react';
 import { Ixo } from 'ixo-module';
 import Launchbutton from './launch-button';
 import Web3 from 'web3';
-import { Redirect } from 'react-router-dom';
 import swal from 'sweetalert';
 
 
@@ -244,36 +243,34 @@ render() {
         <br></br> */}
 
       <br></br>
-      <input value={this.state.messageBody2} onChange={this.handleMessageBodyChanged2} />
-      <Launchbutton
-        provider={this.blockchainProviders.ixo_keysafe.id}
-        title="Sign Schema"
-        handleLaunchEvent={this.handleSchemaButtonClicked} />
-        <br></br>
-        Paste the Schema into the above textbox to Sign
-
+      <b>1. Paste the Schema text here:</b>
       <br></br>
-      <br></br>
-      <input value={this.state.messageBody3} onChange={this.handleMessageBodyChanged3} />
-      <Launchbutton
-        provider={this.blockchainProviders.ixo_keysafe.id}
-        title="Sign Form"
-        handleLaunchEvent={this.handleFormButtonClicked} />
-        <br></br>
-        Paste the Form into the above textbox to Sign
+      <textarea style={{ height: 100, width: 400 }}
+        value={this.state.messageBody2} 
+        onChange={this.handleMessageBodyChanged2} />
       <br></br>
       <br></br>
       <br></br>
-      <input value={this.state.messageBody} onChange={this.handleMessageBodyChanged} />
+      <b>2. Paste the Form text here:</b>
+      <br></br>
+      <textarea style={{ height: 100, width: 400 }}
+        value={this.state.messageBody3} 
+        onChange={this.handleMessageBodyChanged3}/>
+      <br></br>
+      <br></br>
+      <br></br>
+      <b>3. Paste the Project Details here</b><br></br><b>and sign to create your project:</b>
+      <br></br>
+      <textarea style={{ height: 100, width: 400 }}
+        value={this.state.messageBody} 
+        onChange={this.handleMessageBodyChanged} /> 
+      <br></br>
       {this.blockchainProviders.ixo_keysafe.doShow &&
         <Launchbutton
           provider={this.blockchainProviders.ixo_keysafe.id}
-          title="ixo Sign and Create"
+          title="Sign and Create Project"
           handleLaunchEvent={this.handleExtensionLaunch} />
-
       }
-
-
       {this.blockchainProviders.metamask.doShow &&
         <Launchbutton
           provider={this.blockchainProviders.metamask.id}
