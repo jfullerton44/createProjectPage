@@ -7,12 +7,12 @@ log.setDefaultLevel(true ? 'debug' : 'warn')
 
 class App extends Component {
 
-
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">ixo Keysafe consumer</h1>
+        <br></br><br></br>
+          <h1 className="App-title">Project Creation Page</h1>
         </header>
         <Dashboard/>
       </div>
