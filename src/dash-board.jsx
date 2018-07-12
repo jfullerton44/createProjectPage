@@ -185,20 +185,31 @@ export default class Dashboard extends React.Component {
     return encoded;
   }
 
-  // upload documents to pds
-  uploadDoc(text, PDSURL) {
+  // upload documents to pds, message param is json string, type is a string 
+  // either "form" or "schema"
+  uploadAndInsert(text, PDSURL, message, type) {
     let dataUrl = 'data:application/json;base64, ' + text;
-    var hash = this.state.ixo.project.createPublic(dataUrl, PDSURL).then((result) => {    
+    var hash = this.state.ixo.project.createPublic(dataUrl, PDSURL).then((result) => { 
+      // check output, it should now output the hash   
       var resultJSON = JSON.stringify(result);
-      console.log("result: " + resultJSON);
+
+      // display the "templates" property of project json
+      var projectJSON = JSON.parse(message); 
+      console.log("Project JSON templates section" + JSON.stringify(projectJSON['templates']));
+
+      // if the type is schema, insert hash into "schema" section of project json 
+      if (type == "schema") {
+        console.log("schema hash: " + resultJSON.result);
+      }
+      if (type == "form") {
+        console.log("form hash: " + resultJSON.result);
+      }
+
+      // insert the schema
     }).catch((error) => {
       console.log("Error, unable to return hash");
       console.log(error);
     });
-    // result = ixo.project.createPublic(dataUrl, PDSURL).result; 
-    // console.log("stateVar" + this.stateVar);
-    // console.log('Document hash: ' + hash);
-    
   }
 
   // have user sign and upload their project
@@ -208,17 +219,17 @@ export default class Dashboard extends React.Component {
     console.log("Encoded schema json: " + encodedClaimSchema);
     var encodedClaimForm = this.encodeJSON(this.state.messageBody3);
     console.log("Encoded form json: " + encodedClaimForm);
-    var schemaHash = this.uploadDoc(encodedClaimSchema, PDSURL);
-    console.log("schema hash: " + schemaHash);
-    var formHash = this.uploadDoc(encodedClaimForm, PDSURL);
-    console.log("form hash: " + formHash);
+    var schemaHash = this.uploadAndInsert(encodedClaimSchema, PDSURL, message, "schema");
+    //console.log("schema hash: " + schemaHash);
+    var formHash = this.uploadAndInsert(encodedClaimForm, PDSURL, message, "form");
+    //console.log("form hash: " + formHash);
 
     // insert hashes into project.json
-    var projectJSON = JSON.parse(message);
-    console.log("message: " + projectJSON['templates']);
-    projectJSON["templates"]["claim"]["schema"] = schemaHash;
-    projectJSON["templates"]["claim"]["form"] = formHash;
-    console.log("Project json after insertions: " + message)
+    // var projectJSON = JSON.parse(message);
+    // console.log("message: " + JSON.stringify(projectJSON['templates']));
+    // projectJSON["templates"]["claim"]["schema"] = schemaHash;
+    // projectJSON["templates"]["claim"]["form"] = formHash;
+    // console.log("Project json after insertions: " + message)
 
     if (blockchainProvider.id === this.blockchainProviders.ixo_keysafe.id) {
       this.blockchainProviders.ixo_keysafe.provider.requestSigning(message, (error, response) => {
