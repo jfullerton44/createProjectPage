@@ -266,7 +266,7 @@ export default class Dashboard extends React.Component {
           try {
             // this.state.ixo.project.createProject(JSON.parse(message), response, PDSURL).then((result) => {
             console.log("Print project json: " + JSON.stringify(projectJSON));
-            this.state.ixo.project.createProject(projectJSON, response, PDSURL).then((result) => {
+            this.state.ixo.project.createProject(JSON.stringify(projectJSON), response, PDSURL).then((result) => {
 
               console.log(`Project Details:   \n${JSON.stringify(result)}`)
               swal({
