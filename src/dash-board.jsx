@@ -191,7 +191,8 @@ export default class Dashboard extends React.Component {
     let dataUrl = 'data:application/json;base64, ' + text;
     var hash = this.state.ixo.project.createPublic(dataUrl, PDSURL).then((result) => { 
       // check output, it should now output the hash   
-      var resultJSON = JSON.stringify(result);
+      //var resultJSON = JSON.stringify(result);
+      console.log("Result: " + JSON.stringify(result));
 
       // display the "templates" property of project json
       var projectJSON = JSON.parse(message); 
@@ -199,10 +200,10 @@ export default class Dashboard extends React.Component {
 
       // if the type is schema, insert hash into "schema" section of project json 
       if (type == "schema") {
-        console.log("schema hash: " + resultJSON.result);
+        console.log("schema hash: " + JSON.stringify(result.result));
       }
       if (type == "form") {
-        console.log("form hash: " + resultJSON.result);
+        console.log("form hash: " + JSON.stringify(result.result));
       }
 
       // insert the schema
