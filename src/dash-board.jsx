@@ -197,17 +197,17 @@ export default class Dashboard extends React.Component {
       console.log("Result: " + JSON.stringify(result));
 
       // display the "templates" property of project json
-      this.state.projectJSON = JSON.parse(message);
-      console.log("Project JSON templates section" + JSON.stringify(this.state.projectJSON['templates']));
+      projectJSON = JSON.parse(message);
+      console.log("Project JSON templates section" + JSON.stringify(projectJSON['templates']));
 
       // if the type is schema, insert hash into "schema" section of project json 
       if (type == "schema") {
         console.log("schema hash: " + JSON.stringify(result.result));
-        this.state.projectJSON['templates']['claim']['schema'] = JSON.stringify(result.result);
+        projectJSON['templates']['claim']['schema'] = JSON.stringify(result.result);
       }
       if (type == "form") {
         console.log("form hash: " + JSON.stringify(result.result));
-        this.state.projectJSON['templates']['claim']['form'] = JSON.stringify(result.result);
+        projectJSON['templates']['claim']['form'] = JSON.stringify(result.result);
 
       }
 
