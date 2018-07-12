@@ -203,16 +203,15 @@ export default class Dashboard extends React.Component {
       // if the type is schema, insert hash into "schema" section of project json 
       if (type == "schema") {
         console.log("schema hash: " + JSON.stringify(result.result));
-        projectJSON['templates']['claim']['schema'] = JSON.stringify(result.result);
+        projectJSON['templates']['schema'] = JSON.stringify(result.result);
       }
       if (type == "form") {
         console.log("form hash: " + JSON.stringify(result.result));
-        projectJSON['templates']['claim']['form'] = JSON.stringify(result.result);
+        projectJSON['templates']['form'] = JSON.stringify(result.result);
 
       }
-
       // check to see if templates were inserted into project json 
-      console.log("Project JSON templates section after additions: " + JSON.stringify(this.state.projectJSON['templates']));
+      console.log("Project JSON templates section after additions: " + JSON.stringify(projectJSON['templates']));
 
     }).catch((error) => {
       console.log("Error, unable to return hash");
