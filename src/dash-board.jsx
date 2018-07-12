@@ -39,7 +39,7 @@ export default class Dashboard extends React.Component {
       this.initProvider(this.blockchainProviders.ixo_keysafe);
     }
 
-    this.signMessageWithProvider = this.signMessageWithProvider.bind(this);
+    // this.signMessageWithProvider = this.signMessageWithProvider.bind(this);
     this.signData = this.signData.bind(this);
 
   }
