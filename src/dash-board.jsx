@@ -206,7 +206,7 @@ export default class Dashboard extends React.Component {
   //       console.log("schema hash: " + JSON.stringify(result.result));
   //       projectJSON['templates']['schema'] = JSON.stringify(result.result);
   //       this.state.messageBody = projectJSON; 
-        
+
   //     }
   //     if (type == "form") {
   //       console.log("form hash: " + JSON.stringify(result.result));
@@ -264,7 +264,9 @@ export default class Dashboard extends React.Component {
           //alert(`Dashboard handling received response for SIGN response: ${JSON.stringify(response)}, error: ${JSON.stringify(error)}`)
           console.log(`Dashboard handling received response for SIGN response: \n${JSON.stringify(response)}\n, error: \n${JSON.stringify(error)}\n`)
           try {
-            this.state.ixo.project.createProject(JSON.parse(message), response, PDSURL).then((result) => {
+            // this.state.ixo.project.createProject(JSON.parse(message), response, PDSURL).then((result) => {
+            this.state.ixo.project.createProject(projectJSON, response, PDSURL).then((result) => {
+
               console.log(`Project Details:   \n${JSON.stringify(result)}`)
               swal({
                 title: 'Your project has been created!',
