@@ -13,7 +13,7 @@ export default class Dashboard extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { messageBody: '', ixo: null, messageBody2: '', messageBody3: '', stateHash: null }
+    this.state = { messageBody: '', ixo: null, messageBody2: '', messageBody3: '', stateHash: null, globProjJSON: '' }
 
     this.blockchainProviders = {
       metamask: { id: 0, doShow: false, windowKey: "web3", extension: "Metamask", provider: null },
@@ -247,8 +247,12 @@ export default class Dashboard extends React.Component {
         // insert form hash into project json 
         projectJSON['templates']['form'] = JSON.stringify(result.result);
 
-        // check to see if templates were inserted into project json 
+        // check to see if templates were inserted into project json
         console.log("Project JSON templates section after additions: " + JSON.stringify(projectJSON['templates']));
+        
+        // update the state of globProjJSON to match 
+        this.state.globProjJSON = projectJSON;
+        console.log("global projectJSON: " + JSON.stringifythis.state.globProjJSON['templates']['form']);
 
       }).catch((error) => {
         console.log("Error, unable to return form");
@@ -268,8 +272,6 @@ export default class Dashboard extends React.Component {
     console.log("Encoded schema json: " + encodedClaimSchema);
     var encodedClaimForm = this.encodeJSON(this.state.messageBody3);
     console.log("Encoded form json: " + encodedClaimForm);
-    // var schemaHash = this.uploadAndInsert(encodedClaimSchema, PDSURL, message, "schema");
-    // var formHash = this.uploadAndInsert(encodedClaimForm, PDSURL, message, "form");
     var hashes = this.uploadAndInsert(encodedClaimSchema, encodedClaimForm, PDSURL, this.state.messageBody, "schema");
 
 
