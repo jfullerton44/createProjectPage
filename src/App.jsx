@@ -7,18 +7,14 @@ log.setDefaultLevel(true ? 'debug' : 'warn')
 
 class App extends Component {
 
-
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">ixo Keysafe consumer</h1>
+        <br></br><br></br>
+          <h1 className="App-title">Project Creation Page</h1>
         </header>
         <Dashboard/>
-        <br></br>
-        Paste the Project string in the textbox 
-        <br></br>
-        and click "ixo Sign and Create" to create your project
       </div>
     );
   }
