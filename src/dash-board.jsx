@@ -29,7 +29,7 @@ export default class Dashboard extends React.Component {
     this.handleFormButtonClicked = this.handleFormButtonClicked.bind(this);
     this.handleSchemaButtonClicked = this.handleSchemaButtonClicked.bind(this);
     this.encodeJSON = this.encodeJSON.bind(this);
-    this.uploadDoc = this.uploadDoc.bind(this);
+    this.uploadandInsert = this.uploadandInsert.bind(this);
 
     if (this.blockchainProviders.metamask.doShow) {
       this.initProvider(this.blockchainProviders.metamask);
