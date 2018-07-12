@@ -265,7 +265,7 @@ export default class Dashboard extends React.Component {
           console.log(`Dashboard handling received response for SIGN response: \n${JSON.stringify(response)}\n, error: \n${JSON.stringify(error)}\n`)
           try {
             // this.state.ixo.project.createProject(JSON.parse(message), response, PDSURL).then((result) => {
-            this.state.ixo.project.createProject(projectJSON, response, PDSURL).then((result) => {
+            this.state.ixo.project.createProject(JSON.parse(projectJSON), response, PDSURL).then((result) => {
 
               console.log(`Project Details:   \n${JSON.stringify(result)}`)
               swal({
