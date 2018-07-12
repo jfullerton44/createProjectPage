@@ -364,6 +364,7 @@ export default class Dashboard extends React.Component {
         value={this.state.messageBody} 
         onChange={this.handleMessageBodyChanged} /> 
       <br></br>
+      <br></br>
         <Launchbutton
           provider={this.blockchainProviders.ixo_keysafe.id}
           title="Sign and Create Project"
