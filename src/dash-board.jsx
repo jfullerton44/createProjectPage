@@ -342,20 +342,20 @@ export default class Dashboard extends React.Component {
         <br></br> */}
         <br></br>
         <input value={this.state.messageBody2} onChange={this.handleMessageBodyChanged2} />
-        <Launchbutton
+        {/* <Launchbutton
           provider={this.blockchainProviders.ixo_keysafe.id}
           title="Sign Schema"
-          handleLaunchEvent={this.handleSchemaButtonClicked} />
+          handleLaunchEvent={this.handleSchemaButtonClicked} /> */}
         <br></br>
         Paste the Schema into the above textbox to Sign
 
       <br></br>
         <br></br>
         <input value={this.state.messageBody3} onChange={this.handleMessageBodyChanged3} />
-        <Launchbutton
+        {/* <Launchbutton
           provider={this.blockchainProviders.ixo_keysafe.id}
           title="Sign Form"
-          handleLaunchEvent={this.handleFormButtonClicked} />
+          handleLaunchEvent={this.handleFormButtonClicked} /> */}
         <br></br>
         Paste the Form into the above textbox to Sign
        <br></br>
