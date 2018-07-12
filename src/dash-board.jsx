@@ -189,7 +189,7 @@ export default class Dashboard extends React.Component {
   uploadDoc(text, PDSURL) {
     let dataUrl = 'data:application/json;base64, ' + text;
     var hash = this.state.ixo.project.createPublic(dataUrl, PDSURL).then((result) => {    
-      resultJSON = JSON.stringify(result);
+      var resultJSON = JSON.stringify(result);
       console.log("result: " + resultJSON);
     }).catch((error) => {
       console.log("Error, unable to return hash");
