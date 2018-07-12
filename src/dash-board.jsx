@@ -41,7 +41,6 @@ export default class Dashboard extends React.Component {
 
     this.signMessageWithProvider = this.signMessageWithProvider.bind(this);
     this.signData = this.signData.bind(this);
-    this.uploadAndInsert = this.uploadAndInsert.bind(this);
 
   }
 
