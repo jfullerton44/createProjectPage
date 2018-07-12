@@ -191,9 +191,42 @@ export default class Dashboard extends React.Component {
   // message: project json string
   // type: string that reads either "form" or "schema"
   // 
-  uploadAndInsert(text, PDSURL, message, type) {
-    let dataUrl = 'data:application/json;base64, ' + text;
-    var hash = this.state.ixo.project.createPublic(dataUrl, PDSURL).then((result) => {
+  // uploadAndInsert(text, PDSURL, message, type) {
+  //   let dataUrl = 'data:application/json;base64, ' + text;
+  //   var hash = this.state.ixo.project.createPublic(dataUrl, PDSURL).then((result) => {
+  //     // check output, it should now output the hash   
+  //     console.log("Result: " + JSON.stringify(result));
+
+  //     // display the "templates" property of project json
+  //     var projectJSON = JSON.parse(message);
+  //     console.log("Project JSON templates section" + JSON.stringify(projectJSON['templates']));
+
+  //     // if the type is schema, insert hash into "schema" section of project json 
+  //     if (type == "schema") {
+  //       console.log("schema hash: " + JSON.stringify(result.result));
+  //       projectJSON['templates']['schema'] = JSON.stringify(result.result);
+  //       this.state.messageBody = projectJSON; 
+        
+  //     }
+  //     if (type == "form") {
+  //       console.log("form hash: " + JSON.stringify(result.result));
+  //       projectJSON['templates']['form'] = JSON.stringify(result.result);
+  //       // update the state of messageBody to reflect new addition
+  //       this.state.messageBody = projectJSON;
+
+  //     }
+  //     // check to see if templates were inserted into project json 
+  //     console.log("Project JSON templates section after additions: " + JSON.stringify(projectJSON['templates']));
+
+  //   }).catch((error) => {
+  //     console.log("Error, unable to return hash");
+  //     console.log(error);
+  //   });
+  // }
+
+  uploadAndInsert(schemaText, formText, PDSURL, message, type) {
+    let dataUrl1 = 'data:application/json;base64, ' + schemaText;
+    var hash = this.state.ixo.project.createPublic(dataUrl1, PDSURL).then((result) => {
       // check output, it should now output the hash   
       console.log("Result: " + JSON.stringify(result));
 
@@ -201,27 +234,29 @@ export default class Dashboard extends React.Component {
       var projectJSON = JSON.parse(message);
       console.log("Project JSON templates section" + JSON.stringify(projectJSON['templates']));
 
-      // if the type is schema, insert hash into "schema" section of project json 
-      if (type == "schema") {
-        console.log("schema hash: " + JSON.stringify(result.result));
-        projectJSON['templates']['schema'] = JSON.stringify(result.result);
-        this.state.messageBody = projectJSON; 
-        
-      }
-      if (type == "form") {
-        console.log("form hash: " + JSON.stringify(result.result));
+      // insert schema hash into project json 
+      console.log("schema hash: " + JSON.stringify(result.result));
+      projectJSON['templates']['schema'] = JSON.stringify(result.result);
+
+
+      let dataUrl2 = 'data:application/json;base64, ' + formText;
+      var hash2 = this.state.ixo.project.createPublic(dataUrl1, PDSURL).then((result) => {
+        // check output, it should now output the hash   
+        console.log("Result: " + JSON.stringify(result));
+
+        // insert form hash into project json 
         projectJSON['templates']['form'] = JSON.stringify(result.result);
-        // update the state of messageBody to reflect new addition
-        this.state.messageBody = projectJSON;
 
-      }
-      // check to see if templates were inserted into project json 
-      // console.log("Project JSON templates section after additions: " + JSON.stringify(projectJSON['templates']));
-      console.log("Project JSON templates section after additions: " + JSON.stringify(projectJSON['templates']));
+        // check to see if templates were inserted into project json 
+        console.log("Project JSON templates section after additions: " + JSON.stringify(projectJSON['templates']));
 
+      }).catch((error) => {
+        console.log("Error, unable to return form");
+        console.log(error);
+      });
 
     }).catch((error) => {
-      console.log("Error, unable to return hash");
+      console.log("Error, unable to return schema hash");
       console.log(error);
     });
   }
@@ -235,9 +270,7 @@ export default class Dashboard extends React.Component {
     console.log("Encoded form json: " + encodedClaimForm);
     // var schemaHash = this.uploadAndInsert(encodedClaimSchema, PDSURL, message, "schema");
     // var formHash = this.uploadAndInsert(encodedClaimForm, PDSURL, message, "form");
-    var schemaHash = this.uploadAndInsert(encodedClaimSchema, PDSURL, this.state.messageBody, "schema");
-    var formHash = this.uploadAndInsert(encodedClaimForm, PDSURL, this.state.messageBody, "form");
-
+    var hashes = this.uploadAndInsert(encodedClaimSchema, encodedClaimForm, PDSURL, this.state.messageBody, "schema");
 
 
     if (blockchainProvider.id === this.blockchainProviders.ixo_keysafe.id) {
