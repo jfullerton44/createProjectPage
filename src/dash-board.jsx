@@ -223,6 +223,7 @@ export default class Dashboard extends React.Component {
   //     console.log(error);
   //   });
   // }
+
   uploadAndInsert(PDSURL, message, blockchainProvider) {
     var encodedClaimSchema = this.encodeJSON(this.state.messageBody2);
     console.log("Encoded schema json: " + encodedClaimSchema);
@@ -410,3 +411,4 @@ export default class Dashboard extends React.Component {
     )
   }
 }
+
