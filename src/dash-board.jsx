@@ -12,7 +12,7 @@ export default class Dashboard extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { messageBody: '', ixo: null, messageBody2: '', messageBody3: '', stateHash: null }
+    this.state = { messageBody: '', ixo: null, messageBody2: '', messageBody3: '', stateHash: null, projectJSON: '' }
 
     this.blockchainProviders = {
       metamask: { id: 0, doShow: false, windowKey: "web3", extension: "Metamask", provider: null },
@@ -185,28 +185,35 @@ export default class Dashboard extends React.Component {
     return encoded;
   }
 
-  // upload documents to pds, message param is json string, type is a string 
-  // either "form" or "schema"
+  // upload documents to pds
+  // text: encoded json for claim or schema
+  // message: project json string
+  // type: string that reads either "form" or "schema"
+  // 
   uploadAndInsert(text, PDSURL, message, type) {
     let dataUrl = 'data:application/json;base64, ' + text;
-    var hash = this.state.ixo.project.createPublic(dataUrl, PDSURL).then((result) => { 
+    var hash = this.state.ixo.project.createPublic(dataUrl, PDSURL).then((result) => {
       // check output, it should now output the hash   
-      //var resultJSON = JSON.stringify(result);
       console.log("Result: " + JSON.stringify(result));
 
       // display the "templates" property of project json
-      var projectJSON = JSON.parse(message); 
-      console.log("Project JSON templates section" + JSON.stringify(projectJSON['templates']));
+      this.state.projectJSON = JSON.parse(message);
+      console.log("Project JSON templates section" + JSON.stringify(this.state.projectJSON['templates']));
 
       // if the type is schema, insert hash into "schema" section of project json 
       if (type == "schema") {
         console.log("schema hash: " + JSON.stringify(result.result));
+        this.state.projectJSON['templates']['claim']['schema'] = JSON.stringify(result.result);
       }
       if (type == "form") {
         console.log("form hash: " + JSON.stringify(result.result));
+        this.state.projectJSON['templates']['claim']['form'] = JSON.stringify(result.result);
+
       }
 
-      // insert the schema
+      // check to see if templates were inserted into project json 
+      console.log("Project JSON templates section after additions: " + JSON.stringify(this.state.projectJSON['templates']));
+
     }).catch((error) => {
       console.log("Error, unable to return hash");
       console.log(error);
@@ -221,9 +228,7 @@ export default class Dashboard extends React.Component {
     var encodedClaimForm = this.encodeJSON(this.state.messageBody3);
     console.log("Encoded form json: " + encodedClaimForm);
     var schemaHash = this.uploadAndInsert(encodedClaimSchema, PDSURL, message, "schema");
-    //console.log("schema hash: " + schemaHash);
     var formHash = this.uploadAndInsert(encodedClaimForm, PDSURL, message, "form");
-    //console.log("form hash: " + formHash);
 
     // insert hashes into project.json
     // var projectJSON = JSON.parse(message);
@@ -319,11 +324,11 @@ export default class Dashboard extends React.Component {
         <br></br>
         <br></br>
         <input value={this.state.messageBody} onChange={this.handleMessageBodyChanged} />
-          <Launchbutton
-            provider={this.blockchainProviders.ixo_keysafe.id}
-            title="ixo Sign and Create"
-            handleLaunchEvent={this.handleExtensionLaunch} />        
-         {this.blockchainProviders.ixo_keysafe.doShow}
+        <Launchbutton
+          provider={this.blockchainProviders.ixo_keysafe.id}
+          title="ixo Sign and Create"
+          handleLaunchEvent={this.handleExtensionLaunch} />
+        {this.blockchainProviders.ixo_keysafe.doShow}
 
       </div>
     )
