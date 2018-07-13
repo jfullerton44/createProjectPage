@@ -399,7 +399,6 @@ export default class Dashboard extends React.Component {
       <br></br>
       <br></br>
       <b>3. Paste the Project Details here:</b><br></br>
-      <br></br>
       <textarea style={{ height: 100, width: 400 }}
         value={this.state.messageBody} 
         onChange={this.handleMessageBodyChanged} /> 
