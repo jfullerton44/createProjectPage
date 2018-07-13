@@ -266,7 +266,7 @@ export default class Dashboard extends React.Component {
                 swal({
                   title: 'Your project has been created!',
                   text: 'You can find your new project on the ixo website with other current projects. \n \n Click OK to be redirected to the ixo website',
-                  type: "success"
+                  icon: "success"
                 })
                   .then(redirect => {
                     if (redirect) {
@@ -276,7 +276,7 @@ export default class Dashboard extends React.Component {
               })
             } catch (error) {
               console.log("Incorrect PDS URL format")
-              swal("ERROR", "Incorrect PDS URL format", "error")
+              swal("ERROR","Please make sure that you have pasted everything exactly as it appears in the email.", "error")
             }
   
           })
@@ -294,12 +294,14 @@ export default class Dashboard extends React.Component {
         }
       }).catch((error) => {
         console.log("Error, unable to return form");
+        swal("ERROR","Please make sure that you have pasted everything exactly as it appears in the email.", "error")
         console.log(error);
       });
 
    
     }).catch((error) => {
       console.log("Error, unable to return schema hash");
+      swal("ERROR","Please make sure that you have pasted everything exactly as it appears in the email.", "error")
       console.log(error);
     });
   }
