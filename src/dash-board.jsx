@@ -265,7 +265,7 @@ export default class Dashboard extends React.Component {
               this.state.ixo.project.createProject(projectJSON, response, PDSURL).then((result) => {              console.log(`Project Details:   \n${JSON.stringify(result)}`)
                 swal({
                   title: 'Your project has been created!',
-                  text: 'You can find your new project on the ixo website with other current projects. \n \n Click OK to be redirected to the ixo website',
+                  text: 'Click OK to be redirected to ixo.world and get started!',
                   icon: "success"
                 })
                   .then(redirect => {
