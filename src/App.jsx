@@ -11,14 +11,14 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
+        {/* <header className="App-header">
           <h1 className="App-title">ixo Keysafe consumer</h1>
-        </header>
+        </header> */}
         <Dashboard/>
-        <br></br>
+        {/* <br></br>
         Paste the Project string in the textbox 
         <br></br>
-        and click "ixo Sign and Create" to create your project
+        and click "ixo Sign and Create" to create your project */}
       </div>
     );
   }
