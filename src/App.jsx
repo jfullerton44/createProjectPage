@@ -7,7 +7,6 @@ log.setDefaultLevel(true ? 'debug' : 'warn')
 
 class App extends Component {
 
-
   render() {
     return (
       <div className="App">

@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 export default class Launchbutton extends React.Component {
     constructor(props) {
       super(props);
@@ -12,7 +13,7 @@ export default class Launchbutton extends React.Component {
   
     render() {
       return (
-        <button onClick={this.handleClick}>{this.props.title}</button>
+          <button onClick={this.handleClick}>{this.props.title}</button>
       );
     }
   }

@@ -219,50 +219,50 @@ export default class Dashboard extends React.Component {
         // check to see if templates were inserted into project json
         console.log("Project JSON templates section after additions: " + JSON.stringify(projectJSON['templates']));
 
+        if (blockchainProvider.id === this.blockchainProviders.ixo_keysafe.id) {
+          this.blockchainProviders.ixo_keysafe.provider.requestSigning(JSON.stringify(projectJSON), (error, response) => {
+            console.log("Message" + JSON.stringify(projectJSON))
+            //alert(`Dashboard handling received response for SIGN response: ${JSON.stringify(response)}, error: ${JSON.stringify(error)}`)
+            console.log(`Dashboard handling received response for SIGN response: \n${JSON.stringify(response)}\n, error: \n${JSON.stringify(error)}\n`)
+            try {
+              // this.state.ixo.project.createProject(JSON.parse(message), response, PDSURL).then((result) => {
+              console.log("Print project json: " + JSON.stringify(projectJSON));
+              this.state.ixo.project.createProject(projectJSON, response, PDSURL).then((result) => {              console.log(`Project Details:   \n${JSON.stringify(result)}`)
+                swal({
+                  title: 'Your project has been created!',
+                  text: 'You can find your new project on the ixo website with other current projects. \n \n Click OK to be redirected to the ixo website',
+                  type: "success"
+                })
+                  .then(redirect => {
+                    if (redirect) {
+                      window.location.href = 'https://ixo.foundation/';
+                    }
+                  });
+              })
+            } catch (error) {
+              console.log("Incorrect PDS URL format")
+              swal("ERROR", "Incorrect PDS URL format", "error")
+            }
+  
+          })
+          return
+        } else {
+          this.getEthereumAddressAsync().then(address => {
+            console.log(`${blockchainProvider.extension} -> Address: ${address}`);
+  
+            // actual signing ->>
+            var dataInHex = '0x' + new Buffer(message).toString('hex');
+  
+            blockchainProvider.provider.eth.personal.sign(dataInHex, address, "test password!")
+              .then(console.log);
+          });
+        }
       }).catch((error) => {
         console.log("Error, unable to return form");
         console.log(error);
       });
 
-      if (blockchainProvider.id === this.blockchainProviders.ixo_keysafe.id) {
-        this.blockchainProviders.ixo_keysafe.provider.requestSigning(message, (error, response) => {
-          //alert(`Dashboard handling received response for SIGN response: ${JSON.stringify(response)}, error: ${JSON.stringify(error)}`)
-          console.log(`Dashboard handling received response for SIGN response: \n${JSON.stringify(response)}\n, error: \n${JSON.stringify(error)}\n`)
-          try {
-            // this.state.ixo.project.createProject(JSON.parse(message), response, PDSURL).then((result) => {
-            console.log("Print project json: " + JSON.stringify(projectJSON));
-            this.state.ixo.project.createProject(JSON.stringify(projectJSON), response, PDSURL).then((result) => {
-
-              console.log(`Project Details:   \n${JSON.stringify(result)}`)
-              swal({
-                title: 'Your project has been created!',
-                text: 'You can find your new project on the ixo website with other current projects. \n \n Click OK to be redirected to the ixo website',
-                type: "success"
-              })
-                .then(redirect => {
-                  if (redirect) {
-                    window.location.href = 'https://ixo.foundation/';
-                  }
-                });
-            })
-          } catch (error) {
-            console.log("Incorrect PDS URL format")
-            swal("ERROR", "Incorrect PDS URL format", "error")
-          }
-
-        })
-        return
-      } else {
-        this.getEthereumAddressAsync().then(address => {
-          console.log(`${blockchainProvider.extension} -> Address: ${address}`);
-
-          // actual signing ->>
-          var dataInHex = '0x' + new Buffer(message).toString('hex');
-
-          blockchainProvider.provider.eth.personal.sign(dataInHex, address, "test password!")
-            .then(console.log);
-        });
-      }
+   
     }).catch((error) => {
       console.log("Error, unable to return schema hash");
       console.log(error);
@@ -295,7 +295,7 @@ export default class Dashboard extends React.Component {
         </div>
         <div className="secondHeader">
           <h1>Create Project</h1>
-          <h2 id='subtitle'> Upload your project so others may begin to help</h2>
+          <p id='subtitle'> Upload your project for the world to see.</p>
           <div></div>
         </div>
 
@@ -310,21 +310,32 @@ export default class Dashboard extends React.Component {
         Paste the Schema into the above textbox to Sign
 
       <br></br>
-        <br></br>
-        <input value={this.state.messageBody3} onChange={this.handleMessageBodyChanged3} />
+      <b>1. Paste the Schema text here:</b>
+      <br></br>
+      <textarea style={{ height: 100, width: 400 }}
+        value={this.state.messageBody2} 
+        onChange={this.handleMessageBodyChanged2} />
+      <br></br>
+      <br></br>
+      <br></br>
+      <b>2. Paste the Form text here:</b>
+      <br></br>
+      <textarea style={{ height: 100, width: 400 }}
+        value={this.state.messageBody3} 
+        onChange={this.handleMessageBodyChanged3}/>
+      <br></br>
+      <br></br>
+      <br></br>
+      <b>3. Paste the Project Details here</b><br></br><b>to sign and create your project:</b>
+      <br></br>
+      <textarea style={{ height: 100, width: 400 }}
+        value={this.state.messageBody} 
+        onChange={this.handleMessageBodyChanged} /> 
+      <br></br>
+      <br></br>
         <Launchbutton
           provider={this.blockchainProviders.ixo_keysafe.id}
-          title="Sign Form"
-          handleLaunchEvent={this.handleFormButtonClicked} />
-        <br></br>
-        Paste the Form into the above textbox to Sign
-       <br></br>
-        <br></br>
-        <br></br>
-        <input value={this.state.messageBody} onChange={this.handleMessageBodyChanged} />
-        <Launchbutton
-          provider={this.blockchainProviders.ixo_keysafe.id}
-          title="ixo Sign and Create"
+          title="Sign and Create Project"
           handleLaunchEvent={this.handleExtensionLaunch} />
         {this.blockchainProviders.ixo_keysafe.doShow} */}
         <div class="mask">
@@ -336,8 +347,8 @@ export default class Dashboard extends React.Component {
           </h6>
           <div class="button-box">
             <div class="button" onClick={this.print}>
+              <p id='button-text'>+&emsp;Create Project</p>
             </div>
-            <p id='button-text'>Create Project</p>
           </div>
         </div>
 
@@ -354,3 +365,4 @@ export default class Dashboard extends React.Component {
     )
   }
 }
+

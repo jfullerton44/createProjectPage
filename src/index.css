@@ -142,6 +142,7 @@ h6 {
   /* background: gray;  */
   padding-top: 1px;
   margin-top: -1px;
+  /* padding-top: 24px; */
 }
 
 .button {
@@ -150,6 +151,8 @@ h6 {
   border-radius: 2px;
   background: linear-gradient(180deg, #038FB8 0%, #036C93 100%);
   margin-top: 24px;
+  /* padding-top: 1px;
+  margin-top: -1px; */
   margin-left: 186.5px;
 }
 
@@ -186,18 +189,22 @@ h3 {
   font-size: 14px;
   letter-spacing: 0.3px;
   line-height: 19px;
-  right: 1%; 
+  right: 32.2%; 
   color: #3e96c9;
 }
 
 #button-text {
-  display: inline;
+  position: relative; 
   height: 30px;
   width: 186px;
-  color: black;
+  color: white;
   font-family: "Roboto Condensed";
   font-size: 15px;
   letter-spacing: 0.3px;
   line-height: 20px;
   text-align: center;
+  margin-top: 0px;
+  padding-top: 50px;
+  top: 25%; 
+  left: 3.5%; 
 }
