@@ -177,7 +177,7 @@ export default class Dashboard extends React.Component {
     }
   }
 
-  // bit64 encoding function; "text" parameter is a json string
+  // bit64 encoding function; "text" parameter is a document string (either json or image)
   encodeJSON(text) {
     // var utf8 = require('utf8');
     // var binaryToBase64 = require('binaryToBase64');
@@ -255,14 +255,14 @@ export default class Dashboard extends React.Component {
         console.log("Project JSON templates section after additions: " + JSON.stringify(projectJSON['templates']));
 
         if (blockchainProvider.id === this.blockchainProviders.ixo_keysafe.id) {
-          this.blockchainProviders.ixo_keysafe.provider.requestSigning(JSON.stringify(projectJSON), (error, response) => {
+          this.blockchainProviders.ixo_keysafe.provider.requestSigning(projectJSON, (error, response) => {
             console.log("Message" + JSON.stringify(projectJSON))
             //alert(`Dashboard handling received response for SIGN response: ${JSON.stringify(response)}, error: ${JSON.stringify(error)}`)
             console.log(`Dashboard handling received response for SIGN response: \n${JSON.stringify(response)}\n, error: \n${JSON.stringify(error)}\n`)
             try {
               // this.state.ixo.project.createProject(JSON.parse(message), response, PDSURL).then((result) => {
               console.log("Print project json: " + JSON.stringify(projectJSON));
-              this.state.ixo.project.createProject(projectJSON, response, PDSURL).then((result) => {              console.log(`Project Details:   \n${JSON.stringify(result)}`)
+              this.state.ixo.project.createProject(JSON.stringify(projectJSON), response, PDSURL).then((result) => {              console.log(`Project Details:   \n${JSON.stringify(result)}`)
                 swal({
                   title: 'Your project has been created!',
                   text: 'Click OK to be redirected to ixo.world and get started!',
