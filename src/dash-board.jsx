@@ -347,7 +347,7 @@ export default class Dashboard extends React.Component {
           </h6>
           <div class="button-box">
             <div class="button" onClick={this.print}>
-              <p id='button-text'>+&emsp;Create Project</p>
+              <p id='button-text' onClick={this.print()}>+&emsp;Create Project</p>
             </div>
           </div>
         </div>

@@ -89,9 +89,10 @@ p {
   color: white;
   padding-right: 5%;
   font-family: 'Roboto Condensed';
-  font-size: 15px;
+  font-size: 13px;
   line-height: 20px;
   right: 5%;
+  cursor: pointer;
 }
 
 .mask {
@@ -156,6 +157,15 @@ h6 {
   margin-left: 186.5px;
 }
 
+.button:hover {
+  cursor: pointer;
+}
+
+.button:active {
+  background: linear-gradient(180deg, rgb(2, 100, 129) 0%, rgb(3, 88, 119) 100%);
+
+}
+
 h2 {
   height: 57px;
   width: 637px;
@@ -178,6 +188,7 @@ h3 {
   right: 42%;
   bottom: 11.5%;
   text-align: center;
+  cursor: pointer;
 }
 
 #subtitle {
@@ -205,6 +216,6 @@ h3 {
   text-align: center;
   margin-top: 0px;
   padding-top: 50px;
-  top: 25%; 
-  left: 3.5%; 
+  top: 26%; 
+  left: 3%; 
 }
